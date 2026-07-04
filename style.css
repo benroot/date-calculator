@@ -1,0 +1,89 @@
+/* -------------------------------------------------------------
+   Shared app-scaffold styles
+   Loads on top of Bootstrap 5.3. Keep this file small: only add
+   rules here that Bootstrap utility classes cannot express, and
+   keep every selector semantic (never presentational, e.g. no
+   .red-text or .big-box style names).
+   ------------------------------------------------------------- */
+
+:root {
+  --app-max-width: 40rem;
+  --app-gap: 1.5rem;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Constrains and centers a single-task utility app. Distinct from
+   Bootstrap's .container, which is meant for full page layouts. */
+.app-shell {
+  max-width: var(--app-max-width);
+  margin-inline: auto;
+  padding-block: 2rem;
+}
+
+.app-header {
+  margin-bottom: var(--app-gap);
+}
+
+.app-header p {
+  color: var(--bs-secondary-color);
+}
+
+/* Vertical rhythm between form fields, independent of Bootstrap's
+   .mb-3 so field spacing is consistent across every app built on
+   this scaffold. */
+.field-group {
+  margin-bottom: 1.25rem;
+}
+
+.field-hint {
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+}
+
+/* Where a calculated result is displayed. Uses a visible border and
+   generous padding so the result reads as distinct from input
+   controls, without relying on color alone (this satisfies
+   WCAG 1.4.1, which prohibits color as the only visual cue). */
+.result-panel {
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  padding: 1rem 1.25rem;
+  margin-top: var(--app-gap);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.result-panel[hidden] {
+  display: none;
+}
+
+.result-label {
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+  margin-bottom: 0.25rem;
+}
+
+.result-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Visible, high-contrast focus ring on every interactive element.
+   Do not remove: this is required for keyboard navigation. */
+:focus-visible {
+  outline: 3px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
+.is-invalid-message {
+  font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
