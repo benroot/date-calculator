@@ -17,6 +17,8 @@ common code scaffold.
 - Apps currently in this repo:
   - `date-calculator/` — apply a day/week/month/year offset to a date.
   - `pregnancy-calculator/` — estimate a due date from LMP (Naegele's Rule).
+  - `dose-counter/` — figure out how many pills remain to prescribe for a
+    course of medication, given doses already administered.
 
 ## Working principles
 
