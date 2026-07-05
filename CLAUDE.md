@@ -6,6 +6,10 @@ common code scaffold.
 ## Structure
 
 - Each top-level folder is a standalone app (its own `index.html` + `app.js`).
+- A top-level `index.html` at the repo root acts as a landing page: a table
+  listing each app with a short description and a link to that app's own
+  `index.html`. Keep this table in sync whenever an app is added, removed, or
+  its purpose changes.
 - `shared/` holds code reused across every app:
   - `date-utils.js` — pure date-math functions (no DOM, no Alpine). Load this
     before an app's own `app.js`.
