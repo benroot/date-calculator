@@ -72,31 +72,71 @@
       <p class="result-value" aria-labelledby="result-label" x-text="totalDoses"></p>
     </section>
 
-    <form novalidate x-show="hasResult" @submit.prevent="calculateRemaining()">
+    <form novalidate x-show="hasResult" @submit.prevent="commitFirstDoseDate()">
 
       <div class="field-group">
-        <label for="given" class="form-label">Doses already given</label>
+        <label for="first-dose-date" class="form-label">Date of first dispense</label>
         <input
           type="text"
-          id="given"
-          name="given"
+          id="first-dose-date"
+          name="first-dose-date"
           class="form-control"
-          inputmode="numeric"
+          inputmode="text"
           autocomplete="off"
-          placeholder="e.g. 3"
-          aria-describedby="given-hint"
-          x-model="givenInput"
-          @input="calculateRemaining()">
-        <div id="given-hint" class="field-hint">
-          Number of doses already administered (e.g. in the hospital).
+          placeholder="MM/DD/YYYY"
+          aria-describedby="first-dose-date-hint"
+          x-model="firstDoseDateInput"
+          @input="parseFirstDoseDate()"
+          @blur="commitFirstDoseDate()"
+          @keydown.enter.prevent="commitFirstDoseDate()">
+        <div id="first-dose-date-hint" class="field-hint">
+          The date the first dose was given.
         </div>
         <p
           class="is-invalid-message text-danger mt-1"
-          x-show="givenError"
-          x-text="givenError"
+          x-show="firstDoseDateError"
+          x-text="firstDoseDateError"
           role="alert"></p>
-        <output class="calc-result" for="given" x-show="remainingSummary" x-text="remainingSummary"></output>
       </div>
+
+      <div class="field-group" x-show="frequency !== 'qd'">
+        <label for="first-day-dose-count" class="form-label">How many doses were given that day</label>
+        <select
+          id="first-day-dose-count"
+          name="first-day-dose-count"
+          class="form-select"
+          x-model.number="firstDayDoseCount"
+          @change="computeSchedule()">
+          <template x-for="n in doseNumberOptions" :key="n">
+            <option :value="n" x-text="doseCountLabel(n)"></option>
+          </template>
+        </select>
+        <div class="field-hint">
+          Number of doses given on the day of the first dispense.
+        </div>
+      </div>
+
+      <div class="field-group" x-show="showTodayDoseCount">
+        <label for="today-dose-count" class="form-label">How many doses have been given today</label>
+        <select
+          id="today-dose-count"
+          name="today-dose-count"
+          class="form-select"
+          x-model.number="todayDoseCount"
+          @change="computeSchedule()">
+          <template x-for="n in todayDoseOptions" :key="n">
+            <option :value="n" x-text="doseCountLabel(n)"></option>
+          </template>
+        </select>
+        <p
+          class="is-invalid-message text-danger mt-1"
+          x-show="scheduleError"
+          x-text="scheduleError"
+          role="alert"></p>
+        <output class="calc-result" for="today-dose-count" x-show="scheduleRemainingSummary" x-text="scheduleRemainingSummary"></output>
+      </div>
+
+      <output class="calc-result" x-show="finalDoseSummary" x-text="finalDoseSummary"></output>
 
     </form>
 
@@ -104,6 +144,7 @@
 
   <!-- Alpine.js: adds reactive behavior directly to the semantic HTML above -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="../shared/date-utils.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

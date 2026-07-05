@@ -32,32 +32,45 @@ first dose and the current date/time, per iteration 3 below.
 - Compute and display total doses needed for the full course (days ×
   doses-per-day).
 
-### Iteration 2 — subtract doses already given
+### Iteration 2 — subtract doses already given (superseded by iteration 3)
 
 Once total doses are established (iteration 1), add:
 
 - Numeric entry for doses already given (e.g. in the hospital).
 - Compute and display doses remaining to prescribe (total − given).
 
+This manual entry was later removed once iteration 3 could derive the same
+"doses given" count from dosing dates/times instead of a typed number — see
+3c below.
+
 ### Iteration 3 — derive doses given from dose timing
 
-Replace the manual "doses already given" entry from iteration 2 with an
-automatic calculation:
+Replaces iteration 2's typed "doses given" count — instead of typing a
+number directly, derive it from when dosing started. Built in sequential
+sub-steps; each is confirmed working before starting the next.
 
-- Entry for the date/time of the first dose.
-- "Now" is assumed to be the current date/time.
-- Using the frequency from iteration 1, calculate how many doses would have
-  been administered between the first dose and now, then derive doses
-  remaining as in iteration 2.
-
-**Open questions (resolve before implementing this iteration):** the initial
-prompt described entering a "date/time range" for the initial dose rather
-than a single timestamp — needs clarification on whether that's a single
-first-dose timestamp or a start/end window (e.g. when the exact
-administration time is uncertain), and if a window, how it should be
-resolved to a single point for the calculation. Also needs a rule for
-mapping frequency to specific dosing intervals (e.g. does `bid` mean every
-12 hours from the first dose, or two doses at fixed times of day like
-8am/8pm?) — this determines how doses are counted between first-dose time
-and now. Do not guess at either answer — confirm with the user before
-building this iteration.
+- **3a — date of first dispense.** Capture the calendar date the first dose
+  was given. (Done: `firstDoseDateInput` field, parsed/validated against
+  today.)
+- **3b — how many doses given that day.** For frequencies with more than one
+  dose per day (`bid`/`tid`/`qid`), capture how many doses were given on the
+  day of the first dispense (e.g. 2 of 3 for `tid`, if dosing started
+  partway through the day). For `qd` this is always 1, so no input needed.
+  (Done: `firstDayDoseCount` selector, hidden for `qd`.)
+- **3c — doses given today, and doses remaining.** No time-of-day guessing —
+  the current date is read directly (`new Date()`), and the user picks how
+  many doses have been given *today* from a dropdown (0 up to doses-per-day
+  for the selected frequency; skipped, same as 3b, when today *is* the first
+  dispense date, since 3b already covers that day). Total doses given =
+  day-1 count (3b, or 1 for `qd`) + full doses-per-day for every intervening
+  calendar day between the first dispense date and today (exclusive of both
+  ends) + today's dropdown count. Doses remaining = total doses (iteration
+  1) − doses given. (Done: `todayDoseCount` selector, `computeSchedule()`.)
+- **3d — final dose date.** Using the same day-1 count and doses-per-day,
+  project forward from the first dispense date — day 1 partial, every day
+  after at a full doses-per-day — to find the calendar date cumulative
+  doses reach the course total, and how many doses fall on that last day
+  (which may be less than a full doses-per-day if day 1 was short). This is
+  independent of "today" — it only depends on the first-dispense info and
+  the course total, so it can display as soon as those are set. (Done:
+  `finalDoseSummary`, computed alongside 3c in `computeSchedule()`.)
