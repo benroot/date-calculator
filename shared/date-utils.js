@@ -94,6 +94,18 @@ function formatWeeksAndDays(totalDays) {
 }
 
 /**
+ * Formats a whole number of days as a "XmYd" months+days string,
+ * using the same flat 28-day month as applyOffset's "m" unit.
+ * @param {number} totalDays
+ * @returns {string}
+ */
+function formatMonthsAndDays(totalDays) {
+  const months = Math.floor(totalDays / 28);
+  const days = totalDays % 28;
+  return `${months}m${days}d`;
+}
+
+/**
  * Adds a parsed offset to a base date. Months are treated as a flat
  * 28 days (4 weeks) rather than calendar-month arithmetic, so every
  * unit is a simple day-count multiple. Years still use calendar-year
@@ -141,10 +153,11 @@ function applyOffset(baseDate, offset) {
 }
 
 /**
- * Resolves a date field's raw text into an actual Date, accepting
- * either a literal MM/DD/YYYY value or an offset (e.g. "t-30")
- * applied to a reference date (defaults to today). Used by every
- * "hard date OR offset" input across this app scaffold.
+ * Resolves a date field's raw text into an actual Date, accepting a
+ * literal MM/DD/YYYY value, the literal "today" (always the actual
+ * current date, regardless of referenceDate), or an offset (e.g.
+ * "t-30") applied to a reference date (defaults to today). Used by
+ * every "hard date OR offset" input across this app scaffold.
  * @param {string} rawValue
  * @param {Date} [referenceDate]
  * @returns {Date|null}
@@ -152,6 +165,11 @@ function applyOffset(baseDate, offset) {
 function resolveDateField(rawValue, referenceDate) {
   const raw = (rawValue || "").trim();
   if (!raw) return null;
+
+  if (raw.toLowerCase() === "today") {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
 
   const literalDate = parseDate(raw);
   if (literalDate) return literalDate;

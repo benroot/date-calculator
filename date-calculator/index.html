@@ -19,13 +19,13 @@
 
     <header class="app-header">
       <h1>Date Calculator</h1>
-      <p>Enter a date, then apply an offset to calculate a new date.</p>
+      <p>Enter a base date and a second date to find the time between them, or project forward/backward by an offset.</p>
     </header>
 
     <form novalidate @submit.prevent="calculate()">
 
       <div class="field-group">
-        <label for="base-date" class="form-label">Starting date</label>
+        <label for="base-date" class="form-label">Base date</label>
         <input
           type="text"
           id="base-date"
@@ -46,19 +46,24 @@
       </div>
 
       <div class="field-group">
-        <label for="offset" class="form-label">Offset</label>
+        <label for="second-date" class="form-label">Second date</label>
         <input
           type="text"
-          id="offset"
-          name="offset"
+          id="second-date"
+          name="second-date"
           class="form-control"
+          inputmode="text"
           autocomplete="off"
-          placeholder="e.g. t+5, w-2, m+3, y-1"
-          aria-describedby="offset-hint"
-          x-model="offsetInput"
-          @input="calculate()">
-        <div id="offset-hint" class="field-hint">
-          t = days, w = weeks, m = months (28 days each), y = years. Use + or - before the number.
+          placeholder="MM/DD/YYYY or an offset like t+5"
+          aria-describedby="second-date-hint"
+          x-model="secondDateInput"
+          @input="calculate()"
+          @blur="commitSecondDate()"
+          @keydown.enter.prevent="commitSecondDate()">
+        <div id="second-date-hint" class="field-hint">
+          Format: MM/DD/YYYY — or enter an offset from the base date, like
+          t+5, w-2, m+3, y-1, and it will be replaced with the resulting
+          date once you leave the field.
         </div>
         <p
           class="is-invalid-message text-danger mt-1"
@@ -73,9 +78,22 @@
       class="result-panel"
       aria-live="polite"
       :hidden="!hasResult">
-      <p class="result-label" id="result-label">Resulting date</p>
-      <p class="result-value" aria-labelledby="result-label" x-text="resultDate"></p>
-      <output class="calc-result" for="base-date offset" x-show="offsetSummary" x-text="offsetSummary"></output>
+
+      <dl>
+        <dt>Base date</dt>
+        <dd x-text="baseDateDisplay"></dd>
+
+        <dt>Second date</dt>
+        <dd x-text="secondDateDisplay"></dd>
+      </dl>
+
+      <p class="result-label">Difference</p>
+      <output class="calc-result" for="base-date second-date" x-text="differenceSummary"></output>
+      <ul>
+        <li>Months: <span x-text="monthsDisplay"></span></li>
+        <li>Weeks + days: <span x-text="weeksDisplay"></span></li>
+        <li>Days: <span x-text="daysDisplay"></span></li>
+      </ul>
     </section>
 
   </main>

@@ -1,7 +1,8 @@
 /* -------------------------------------------------------------
    Date Calculator — Alpine component
    Relies on shared/date-utils.js being loaded first for formatDate,
-   parseDate, parseOffset, applyOffset, resolveDateField.
+   resolveDateField, daysBetween, formatWeeksAndDays,
+   formatMonthsAndDays.
    ------------------------------------------------------------- */
 
 /**
@@ -12,33 +13,32 @@
 function dateCalculator() {
   return {
     baseDateInput: formatDate(new Date()),
-    offsetInput: "",
-    resultDate: "",
+    secondDateInput: "",
     errorMessage: "",
+    baseDateDisplay: "",
+    secondDateDisplay: "",
+    differenceSummary: "",
+    monthsDisplay: "",
+    weeksDisplay: "",
+    daysDisplay: "",
 
     get hasResult() {
-      return this.resultDate !== "" && this.errorMessage === "";
-    },
-
-    get offsetSummary() {
-      const offset = parseOffset(this.offsetInput);
-      if (!offset) return "";
-      const unitLabel = OFFSET_UNIT_LABELS[offset.unit];
-      const count = Math.abs(offset.amount);
-      const plural = count === 1 ? "" : "s";
-      const direction = offset.amount < 0 ? "before" : "after";
-      return `${count} ${unitLabel}${plural} ${direction} the entered date`;
+      return this.secondDateDisplay !== "" && this.errorMessage === "";
     },
 
     /**
-     * Live preview only. Reads the base-date field as typed but
-     * never writes back to it, so the user's cursor and in-progress
-     * offset text (like "t+" before the digits land) are never
-     * disturbed mid-keystroke.
+     * Live preview only. Reads both fields as typed but never writes
+     * back to them, so the user's cursor and in-progress text (like
+     * "t+" before the digits land) are never disturbed mid-keystroke.
      */
     calculate() {
       this.errorMessage = "";
-      this.resultDate = "";
+      this.baseDateDisplay = "";
+      this.secondDateDisplay = "";
+      this.differenceSummary = "";
+      this.monthsDisplay = "";
+      this.weeksDisplay = "";
+      this.daysDisplay = "";
 
       const baseDate = resolveDateField(this.baseDateInput);
       if (!baseDate) {
@@ -47,20 +47,30 @@ function dateCalculator() {
         return;
       }
 
-      if (!this.offsetInput.trim()) {
+      if (!this.secondDateInput.trim()) {
         // Nothing to calculate yet; not an error state.
         return;
       }
 
-      const offset = parseOffset(this.offsetInput);
-      if (!offset) {
+      const secondDate = resolveDateField(this.secondDateInput, baseDate);
+      if (!secondDate) {
         this.errorMessage =
-          "Enter an offset like t+5 (days), w-2 (weeks), m+3 (months), or y-1 (years).";
+          "Enter the second date as MM/DD/YYYY, or an offset like t+5 from the base date.";
         return;
       }
 
-      const result = applyOffset(baseDate, offset);
-      this.resultDate = formatDate(result);
+      const diffDays = daysBetween(baseDate, secondDate);
+      const absDays = Math.abs(diffDays);
+
+      this.baseDateDisplay = formatDate(baseDate);
+      this.secondDateDisplay = formatDate(secondDate);
+      this.differenceSummary =
+        diffDays === 0
+          ? "The second date is the same as the base date."
+          : `The second date is ${absDays} day${absDays === 1 ? "" : "s"} ${diffDays > 0 ? "after" : "before"} the base date.`;
+      this.monthsDisplay = formatMonthsAndDays(absDays);
+      this.weeksDisplay = formatWeeksAndDays(absDays);
+      this.daysDisplay = String(absDays);
     },
 
     /**
@@ -74,6 +84,22 @@ function dateCalculator() {
       const resolved = resolveDateField(this.baseDateInput);
       if (resolved) {
         this.baseDateInput = formatDate(resolved);
+      }
+      this.calculate();
+    },
+
+    /**
+     * Commits the second-date field: same idea as commitBaseDate(),
+     * but an offset here resolves relative to the base date rather
+     * than today.
+     */
+    commitSecondDate() {
+      const baseDate = resolveDateField(this.baseDateInput);
+      if (baseDate) {
+        const resolved = resolveDateField(this.secondDateInput, baseDate);
+        if (resolved) {
+          this.secondDateInput = formatDate(resolved);
+        }
       }
       this.calculate();
     },
