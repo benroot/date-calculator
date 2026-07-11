@@ -32,7 +32,7 @@ function doseCounter() {
     firstDayDoseCount: 1,
     todayDoseCount: 0,
     scheduleError: "",
-    scheduleRemainingSummary: "",
+    remainingDoses: null,
     finalDoseSummary: "",
 
     get hasResult() {
@@ -107,21 +107,17 @@ function doseCounter() {
       this.firstDoseDate = null;
 
       const raw = this.firstDoseDateInput.trim();
-      if (!raw) return;
-
-      const resolved = resolveDateField(this.firstDoseDateInput);
-      if (!resolved) {
-        this.firstDoseDateError = "Enter the date of the first dose as MM/DD/YYYY.";
-        return;
+      if (raw) {
+        const resolved = resolveDateField(this.firstDoseDateInput);
+        if (!resolved) {
+          this.firstDoseDateError = "Enter the date of the first dose as MM/DD/YYYY.";
+        } else if (resolved > new Date()) {
+          this.firstDoseDateError = "The date of the first dose can't be in the future.";
+        } else {
+          this.firstDoseDate = resolved;
+        }
       }
 
-      const today = new Date();
-      if (resolved > today) {
-        this.firstDoseDateError = "The date of the first dose can't be in the future.";
-        return;
-      }
-
-      this.firstDoseDate = resolved;
       this.computeSchedule();
     },
 
@@ -175,7 +171,7 @@ function doseCounter() {
      */
     computeSchedule() {
       this.scheduleError = "";
-      this.scheduleRemainingSummary = "";
+      this.remainingDoses = null;
       this.finalDoseSummary = "";
 
       const details = this.getScheduleDetails();
@@ -186,8 +182,7 @@ function doseCounter() {
         this.scheduleError =
           "The schedule implies more doses given than the total course — check the entries above.";
       } else {
-        const remaining = this.totalDoses - given;
-        this.scheduleRemainingSummary = `${remaining} dose${remaining === 1 ? "" : "s"} remaining to prescribe.`;
+        this.remainingDoses = this.totalDoses - given;
       }
 
       const finalDoseDate = applyOffset(this.firstDoseDate, { unit: "t", amount: finalDayOffset });

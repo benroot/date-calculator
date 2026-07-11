@@ -133,12 +133,18 @@
           x-show="scheduleError"
           x-text="scheduleError"
           role="alert"></p>
-        <output class="calc-result" for="today-dose-count" x-show="scheduleRemainingSummary" x-text="scheduleRemainingSummary"></output>
       </div>
 
-      <output class="calc-result" x-show="finalDoseSummary" x-text="finalDoseSummary"></output>
-
     </form>
+
+    <section
+      class="result-panel"
+      aria-live="polite"
+      :hidden="remainingDoses === null">
+      <p class="result-label" id="remaining-doses-label">Doses remaining to prescribe</p>
+      <p class="result-value" aria-labelledby="remaining-doses-label" x-text="remainingDoses"></p>
+      <output class="calc-result" x-show="finalDoseSummary" x-text="finalDoseSummary"></output>
+    </section>
 
     <section x-show="scheduleRows.length > 0">
       <p class="result-label">Dose schedule</p>
