@@ -43,10 +43,13 @@ body {
   color: var(--bs-secondary-color);
 }
 
-/* A computed, sentence-style result (distinct from .result-value,
-   which is for a single prominent headline value). Renders as
-   normal-emphasis body text rather than a muted hint, since it's an
-   answer, not guidance. Pair with the <output> element. */
+/* A secondary, sentence-style elaboration alongside a .result-value
+   (distinct from it — normal-emphasis body text, not a muted hint,
+   since it's still an answer, not guidance). Use a plain <p> here:
+   when a panel has both a headline value and a sentence, <output>
+   belongs on the headline value, not this. If a section has only a
+   sentence-style result with no separate headline number, that lone
+   result can use <output> instead. */
 .calc-result {
   display: block;
   color: var(--bs-body-color);
@@ -74,6 +77,9 @@ body {
   margin-bottom: 0.25rem;
 }
 
+/* The single prominent headline value in a result panel. Use the
+   <output> element here — HTML defines <output> as "the result of a
+   calculation," and this is that primary result. */
 .result-value {
   font-size: 1.5rem;
   font-weight: 600;

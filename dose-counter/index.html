@@ -69,7 +69,7 @@
       aria-live="polite"
       :hidden="!hasResult">
       <p class="result-label" id="result-label">Total doses needed</p>
-      <p class="result-value" aria-labelledby="result-label" x-text="totalDoses"></p>
+      <output class="result-value" aria-labelledby="result-label" x-text="totalDoses"></output>
     </section>
 
     <form novalidate x-show="hasResult" @submit.prevent="commitFirstDoseDate()">
@@ -142,8 +142,8 @@
       aria-live="polite"
       :hidden="remainingDoses === null">
       <p class="result-label" id="remaining-doses-label">Doses remaining to prescribe</p>
-      <p class="result-value" aria-labelledby="remaining-doses-label" x-text="remainingDoses"></p>
-      <output class="calc-result" x-show="finalDoseSummary" x-text="finalDoseSummary"></output>
+      <output class="result-value" aria-labelledby="remaining-doses-label" x-text="remainingDoses"></output>
+      <p class="calc-result" x-show="finalDoseSummary" x-text="finalDoseSummary"></p>
     </section>
 
     <section x-show="scheduleRows.length > 0">
