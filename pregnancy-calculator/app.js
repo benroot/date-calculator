@@ -2,7 +2,7 @@
    Pregnancy Due Date Calculator — Alpine component
    Relies on shared/date-utils.js being loaded first for formatDate,
    parseDate, applyOffset, daysBetween, parseWeeksAndDays,
-   formatWeeksAndDays.
+   formatWeeksAndDays, resolveDateField.
 
    Clinical basis: Naegele's Rule estimates the due date as the last
    menstrual period (LMP) plus 280 days (40 weeks), assuming a
@@ -145,7 +145,7 @@ function pregnancyCalculator() {
         return;
       }
 
-      const date = parseDate(raw);
+      const date = resolveDateField(raw);
       if (date) {
         if (date < this.lmp) {
           this.secondaryError = "That date is before the LMP, so gestational age isn't defined yet.";
