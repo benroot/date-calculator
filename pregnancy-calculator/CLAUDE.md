@@ -61,7 +61,12 @@ Once the three parameters are established (iteration 1), add:
 - Show expected prenatal care milestones (e.g. anatomy scan at ~20 weeks GA)
   mapped to actual calendar dates for this pregnancy, using iteration 2's
   GA-to-date calculation.
-- **Blocked**: the reference list of care milestones (what they are and at
-  what GA they typically occur) has not been provided yet. Do not invent or
-  guess clinical milestones/timing — wait for that material before
-  implementing this iteration.
+- The reference material for this (visit timing, fetal surveillance timing,
+  lab testing) now exists in
+  [`prenatal_care_timing_and_labs.md`](prenatal_care_timing_and_labs.md), and
+  is rendered as a static reference section at the bottom of `index.html` —
+  always visible, not tied to any calculated result. That rendering is
+  reference-only for now; this iteration (deriving specific milestones from
+  that document and mapping each to a calendar date via iteration 2's
+  GA-to-date calculation) is still a separate, not-yet-started task. Do not
+  invent or guess clinical milestones/timing not present in that document.
