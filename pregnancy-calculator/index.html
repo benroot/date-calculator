@@ -103,10 +103,16 @@
           x-show="secondaryError"
           x-text="secondaryError"
           role="alert"></p>
-        <output class="calc-result" for="secondary-input" x-show="secondaryResult" x-text="secondaryResult"></output>
       </div>
 
     </form>
+
+    <section
+      class="result-panel"
+      aria-live="polite"
+      :hidden="!secondaryResult">
+      <output class="calc-result" for="secondary-input" x-text="secondaryResult"></output>
+    </section>
 
     <p class="field-hint mt-3">
       Estimate based on Naegele's Rule (LMP + 280 days / 40 weeks), which
