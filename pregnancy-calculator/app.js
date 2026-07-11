@@ -68,7 +68,7 @@ function resolveLmpFromInput(rawValue, today) {
  */
 function pregnancyCalculator() {
   return {
-    rawInput: "",
+    rawInput: "8w",
     errorMessage: "",
     lmp: null,
     lmpDisplay: "",
