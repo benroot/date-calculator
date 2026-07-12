@@ -15,12 +15,65 @@
 </head>
 <body>
 
-  <main class="app-shell">
+  <main class="app-shell" x-data="pediatricDosing()">
 
     <header class="app-header">
       <h1>Pediatric Dosing</h1>
-      <p>Weight-based dosing reference for common pediatric medications. Currently covers acetaminophen (Tylenol).</p>
+      <p>Weight-based dosing for common pediatric medications. Currently covers acetaminophen (Tylenol).</p>
     </header>
+
+    <form novalidate @submit.prevent="calculate()">
+
+      <div class="field-group">
+        <label for="weight-input" class="form-label">Weight</label>
+        <input
+          type="text"
+          id="weight-input"
+          name="weight-input"
+          class="form-control"
+          inputmode="text"
+          autocomplete="off"
+          placeholder="e.g. 9.7kg or 20lbs"
+          aria-describedby="weight-input-hint"
+          x-model="weightInput"
+          @input="calculate()"
+          @blur="commitWeightInput()"
+          @keydown.enter.prevent="commitWeightInput()">
+        <div id="weight-input-hint" class="field-hint">
+          Enter the child's weight with a unit: kg/k, or lb/lbs/# for pounds.
+        </div>
+        <p
+          class="is-invalid-message text-danger mt-1"
+          x-show="errorMessage"
+          x-text="errorMessage"
+          role="alert"></p>
+      </div>
+
+      <div class="field-group">
+        <label for="dose-per-kg" class="form-label">Dose</label>
+        <select
+          id="dose-per-kg"
+          name="dose-per-kg"
+          class="form-select"
+          x-model.number="dosePerKg"
+          @change="calculate()">
+          <option value="15">15 mg/kg per dose (standard)</option>
+          <option value="10">10 mg/kg per dose (lower end of range)</option>
+        </select>
+      </div>
+
+    </form>
+
+    <section
+      class="result-panel"
+      aria-live="polite"
+      :hidden="!hasResult">
+      <p class="result-label" id="dose-ml-label">Give</p>
+      <output class="result-value" aria-labelledby="dose-ml-label" x-text="doseMlDisplay"></output>
+      <p class="calc-result" x-text="doseMgDisplay"></p>
+    </section>
+
+    <hr class="mt-5">
 
     <section aria-labelledby="guidelines-heading">
       <h2 id="guidelines-heading">Acetaminophen (Tylenol) Dosing Guidelines</h2>
@@ -83,5 +136,8 @@
 
   </main>
 
+  <!-- Alpine.js: adds reactive behavior directly to the semantic HTML above -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

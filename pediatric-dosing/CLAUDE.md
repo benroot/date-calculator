@@ -32,7 +32,7 @@ added (see iterations).
 
 ## Iterations
 
-### Iteration 1 — Tylenol reference content (current focus)
+### Iteration 1 — Tylenol reference content (done)
 
 - Read the acetaminophen section of
   [`tylenol and motrin dosage guidelines.md`](tylenol%20and%20motrin%20dosage%20guidelines.md)
@@ -45,14 +45,20 @@ added (see iterations).
   the surrounding guidelines text should acknowledge the 10–15 mg/kg range
   rather than presenting 15 mg/kg as the only correct dose.
 - Static/reference only — no calculator input yet.
-- **When this iteration is done and confirmed working, prompt to add an
-  entry for `pediatric-dosing/` to the root [`index.html`](../index.html)
-  landing page table**, per repo-wide convention.
+- Addition to the root [`index.html`](../index.html) landing page table is
+  **intentionally deferred until iteration 2** is done (user's call — the app
+  isn't useful as a standalone destination until the calculator exists).
+  Prompt again once iteration 2 is confirmed working.
 
-### Iteration 2 — weight-based calculator
+### Iteration 2 — weight-based calculator (current focus)
 
-- Text input accepting weight in lb or kg (needs a clear way to specify or
-  infer which unit was entered).
+- Single text input accepting weight with an inline unit — a number
+  immediately or space-separated from `kg`/`k`, or `lb`/`lbs`/`#` for pounds
+  (e.g. `9.7kg`, `9 k`, `20lbs`, `20#`). A bare number with no unit is
+  invalid — kg and lb values look identical unitless, so guessing would
+  risk a silent mis-dose. Once parsed, the field is rewritten to a
+  normalized `value unit` form (e.g. `20 lb`) on blur/enter, same pattern
+  as the date-field commit convention in `dose-counter/app.js`.
 - A dose-per-kg toggle, **defaulting to 15 mg/kg**, with an option to switch
   to **10 mg/kg** (the low end of the source document's range) — the
   calculator should not be hardcoded to 15 mg/kg only.
