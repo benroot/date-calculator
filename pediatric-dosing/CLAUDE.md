@@ -1,0 +1,76 @@
+# pediatric-dosing — app spec
+
+Weight-based dosing helper for common pediatric medications. See root
+[`CLAUDE.md`](../CLAUDE.md) for repo-wide structure and working principles;
+this file tracks the spec for this app specifically and should evolve as the
+app does.
+
+## Core concept
+
+Given a child's weight, calculate the correct weight-based dose of a
+medication and express it as a liquid volume of a standard commercial
+concentration, since liquid formulations are what's actually administered.
+
+- **Acetaminophen (Tylenol)** — the source document's dosing range is
+  **10–15 mg/kg per dose**; this app treats **15 mg/kg as the default** dose
+  but should acknowledge and support calculating at the lower end of the
+  range too (see iterations below), using the standard **160 mg/5 mL**
+  suspension (the current single US concentration for both infant and
+  children's products). Source reference material for this medication lives
+  in
+  [`tylenol and motrin dosage guidelines.md`](tylenol%20and%20motrin%20dosage%20guidelines.md).
+  Do not invent or guess clinical values not present in that document — the
+  10–15 mg/kg range, frequency, daily max, and safety notes should all be
+  sourced from the document as-is.
+- **Ibuprofen (Motrin)** — future medication, same document already has the
+  reference dosing data for it (5–10 mg/kg/dose, 100 mg/5 mL children's
+  suspension). Not in scope until the iteration below.
+
+The app is single-medication-at-a-time: one set of guidelines, one dosing
+table, one calculator, with medication selection arriving once ibuprofen is
+added (see iterations).
+
+## Iterations
+
+### Iteration 1 — Tylenol reference content (current focus)
+
+- Read the acetaminophen section of
+  [`tylenol and motrin dosage guidelines.md`](tylenol%20and%20motrin%20dosage%20guidelines.md)
+  and render it as simplified, semantic HTML: dosing rule, frequency/max
+  daily dose, and the key safety reminders (hepatotoxicity risk, accounting
+  for combination products).
+- Render the standard dosing table (weight → dose in mg → volume in mL,
+  15 mg/kg using 160 mg/5 mL suspension) from the same document. The table
+  stays fixed at 15 mg/kg — it's a reference chart, not the calculator — but
+  the surrounding guidelines text should acknowledge the 10–15 mg/kg range
+  rather than presenting 15 mg/kg as the only correct dose.
+- Static/reference only — no calculator input yet.
+- **When this iteration is done and confirmed working, prompt to add an
+  entry for `pediatric-dosing/` to the root [`index.html`](../index.html)
+  landing page table**, per repo-wide convention.
+
+### Iteration 2 — weight-based calculator
+
+- Text input accepting weight in lb or kg (needs a clear way to specify or
+  infer which unit was entered).
+- A dose-per-kg toggle, **defaulting to 15 mg/kg**, with an option to switch
+  to **10 mg/kg** (the low end of the source document's range) — the
+  calculator should not be hardcoded to 15 mg/kg only.
+- Compute the selected mg/kg dose in mg, convert to volume of 160 mg/5 mL
+  suspension in mL.
+- Display both in a result panel: **mL is primary** (larger/first — this is
+  what's actually measured and given), **mg is secondary** (supporting
+  detail).
+
+### Future work (not yet started)
+
+- Independent app-level stylesheet to refine look and feel, layered on
+  Bootstrap + `shared/style.css` per root principle 3.
+- A "copy dosing table" action that formats the table in a way suitable for
+  pasting into patient instructions in a medical record.
+- Add ibuprofen support: same guidelines-simplification + dosing-table +
+  calculator pattern as Tylenol, plus UI to switch between the two
+  medications. When this lands, revisit whether medication-config or
+  weight-conversion logic should move to `shared/` (root principle 5) if a
+  clean reuse opportunity exists — don't force it prematurely.
+</content>
